@@ -1,0 +1,74 @@
+version: "3.8"
+
+services:
+  # ── Redis ────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ── FastAPI Backend ──────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - AUDIOVIZ_REDIS_URL=redis://redis:6379/0
+      - AUDIOVIZ_CELERY_BROKER_URL=redis://redis:6379/0
+      - AUDIOVIZ_CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - AUDIOVIZ_TEMP_DIR=/tmp/audio_viz
+      - AUDIOVIZ_MAX_AUDIO_DURATION=60
+      - AUDIOVIZ_JOB_TTL=3600
+    volumes:
+      - temp_data:/tmp/audio_viz
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── Celery Worker ────────────────────────────────────────
+  worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    command: >
+      celery -A app.celery_app:celery_app worker
+      --loglevel=info
+      --concurrency=2
+      --max-tasks-per-child=50
+    environment:
+      - AUDIOVIZ_REDIS_URL=redis://redis:6379/0
+      - AUDIOVIZ_CELERY_BROKER_URL=redis://redis:6379/0
+      - AUDIOVIZ_CELERY_RESULT_BACKEND=redis://redis:6379/0
+      - AUDIOVIZ_TEMP_DIR=/tmp/audio_viz
+      - AUDIOVIZ_MAX_AUDIO_DURATION=60
+    volumes:
+      - temp_data:/tmp/audio_viz
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ── Frontend (React + Vite) ──────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+  temp_data:

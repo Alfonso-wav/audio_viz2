@@ -1,0 +1,21 @@
+{
+  "current": "0.1.0",
+  "versions": [
+    {
+      "version": "0.1.0",
+      "date": "2026-03-02",
+      "description": "MVP — YouTube URL → Spleeter separation → p5.js live preview → MP4 export",
+      "changes": [
+        "FastAPI + Celery + Redis backend",
+        "yt-dlp audio download",
+        "Spleeter 5-stem separation",
+        "Audio feature extraction (RMS + 5 frequency bands at 30fps)",
+        "React + Vite + TypeScript + TailwindCSS frontend",
+        "p5.js live preview with Web Audio API",
+        "Offline deterministic MP4 render with Pillow + ffmpeg",
+        "Docker Compose deployment (backend, worker, frontend, redis)",
+        "Full test suite (87 backend + 27 frontend tests)"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+# NOTE: numpy, tensorflow, spleeter are installed separately in Dockerfile
+fastapi>=0.115,<1.0
+uvicorn[standard]>=0.30,<1.0
+python-multipart>=0.0.12
+celery[redis]==5.4.0
+redis>=5.0,<6.0
+yt-dlp>=2024.1
+Pillow>=10.0,<12.0
+librosa>=0.10,<0.11
+soundfile>=0.12
+pydantic>=2.0,<3.0
+pydantic-settings>=2.0,<3.0
+
+# Pinned for Spleeter 2.4.0 compatibility
+typer==0.4.1
+click==8.1.7

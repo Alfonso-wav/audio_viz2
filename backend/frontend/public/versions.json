@@ -1,0 +1,22 @@
+{
+  "current": "0.2.0",
+  "versions": [
+    {
+      "version": "0.2.0",
+      "date": "2026-03-02",
+      "description": "Second release",
+      "changes": [
+        "Feature X",
+        "Bug fix Y"
+      ]
+    },
+    {
+      "version": "0.1.0",
+      "date": "2026-01-01",
+      "description": "Init",
+      "changes": [
+        "A"
+      ]
+    }
+  ]
+}
